@@ -20,7 +20,7 @@ def run_tool():
     commands = {
         'ping': ['ping', '-c', '4', target],
         'nslookup': ['nslookup', target],
-        'traceroute': ['traceroute', target],
+        'traceroute': ['traceroute', '-m', '20', '-q', '1', '-w', '2', target],
     }
 
     if tool not in commands:
