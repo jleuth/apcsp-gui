@@ -37,6 +37,17 @@ def run_tool():
         output = f'~ error: {e} ~'
 
     return jsonify({'output': output})
+
+@app.route('/save', methods=['POST']) 
+def save():
+    output = request.json.get('output')
     
+    if not output:
+        return jsonify({'error': 'No output to save'}), 400
+
+    with open('output.txt', 'w') as f:
+        f.write(output)
+    return jsonify({'filename': 'output.txt'})
+
 if __name__ == '__main__':
     app.run(debug=True)
