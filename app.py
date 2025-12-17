@@ -21,5 +21,19 @@ def run_tool():
         'traceroute': ['traceroute', target],
     }
 
+    if tool not in commands:
+        return jsonify({'error': 'invalid tool ruh roh'}), 400
+
+    try:
+        timeout = 60 if tool == 'traceroute' else 30
+        result = subprocess.run(commands[tool], capture_output=True, text=True, timeout=timeout)
+        output = result.stdout or result.stderr or '~ no output ~'
+    except subprocess.TimeoutExpired:
+        output = '~ command timed out ~'
+    except Exception as e:
+        output = f'~ error: {e} ~'
+
+    return jsonify({'output': output})
+    
 if __name__ == '__main__':
     app.run(debug=True)
