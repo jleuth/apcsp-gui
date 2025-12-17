@@ -34,6 +34,36 @@
                 <h1 class="text-[1.5rem] text-[#e8dcc8]">Output:</h1>
                 <p>~ results will appear here ~</p>
             </div>
+
+            <script>
+                const output = document.getElementById('output');
+                const target = document.getElementById('target');
+                const buttons = document.querySelectorAll('button');
+        
+                target.addEventListener('keypress', e => {
+                    if (e.key === 'Enter') runTool('ping');
+                });
+        
+                function runTool(tool) {
+                    output.textContent = '~ running ' + tool + '... ~';
+                    buttons.forEach(b => b.disabled = true);
+        
+                    fetch('/run', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        body: 'tool=' + tool + '&target=' + encodeURIComponent(target.value)
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        output.textContent = data.output;
+                        buttons.forEach(b => b.disabled = false);
+                    })
+                    .catch(() => {
+                        output.textContent = '~ connection error ~';
+                        buttons.forEach(b => b.disabled = false);
+                    });
+                }
+            </script>
         </body>
     </head>
 </html>
